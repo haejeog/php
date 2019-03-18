@@ -40,12 +40,8 @@ public function loadById($id){
     
     $results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(":ID"=>$id));
     if(count($results)>0){
-    	$row = $results[0];
 
-         $this->setIdUsuario($row['idusuario']);
-         $this->setDeslogin($row['deslogin']);
-         $this->setDessenha($row['dessenha']);
-         $this->setDtcadastro(new DateTime($row['dtcadastro']));
+         $this->setData($results[0]);
     }
 
 }
@@ -76,11 +72,8 @@ $sql = new Sql();
      ));
     if(count($results)>0){
     	$row = $results[0];
-
-         $this->setIdUsuario($row['idusuario']);
-         $this->setDeslogin($row['deslogin']);
-         $this->setDessenha($row['dessenha']);
-         $this->setDtcadastro(new DateTime($row['dtcadastro']));
+$this->setData($results[0]);
+         
     }else{
 
     	throw new Exception("Login e/ou senha incorretos.");
@@ -89,7 +82,27 @@ $sql = new Sql();
 
 
 }
+public function setData($data){
+         $this->setIdUsuario($data['idusuario']);
+         $this->setDeslogin($data['deslogin']);
+         $this->setDessenha($data['dessenha']);
+         $this->setDtcadastro(new DateTime($data['dtcadastro']));
+}
+public function insert(){
 
+	$sql = new Sql();
+
+	$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)",array(
+		':LOGIN'=>$this->getDeslogin(),
+		':PASSWORD'=>$this->getDessenha()));
+	if(count($results)>0){
+		$this->setData($results[0]);
+	}
+}
+public function __construct($login = "",$password = ""){
+	$this->setDeslogin($login);
+	$this->setDessenha($password);
+}
 public function __tostring(){
 
      return json_encode(array(
