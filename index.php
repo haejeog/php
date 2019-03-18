@@ -1,8 +1,11 @@
-<?php
+<?php 
 
-echo "<strong>Olá mundo 457</strong>";
+require_once("config.php");
 
-echo "<strong>Olá Familia!</strong>";
+$sql = new Sql();
 
-echo "Oioi Familia";
-?>
+$usuarios =$sql->select("SELECT * FROM tb_usuarios");
+
+echo json_encode($usuarios);
+
+ ?>
